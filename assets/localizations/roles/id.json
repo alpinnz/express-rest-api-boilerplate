@@ -1,0 +1,13 @@
+{
+  "roleNotFound": "Role tidak ditemukan.",
+  "roleNameInvalid": "Gunakan identifier huruf kecil yang berisi huruf, angka, garis bawah, atau tanda hubung.",
+  "roleLevelInvalid": "Level role harus berupa bilangan bulat positif.",
+  "roleNameAlreadyExists": "Role dengan nama ini sudah ada.",
+  "roleInUse": "Role tidak dapat dihapus selama masih digunakan oleh user aktif.",
+  "roleLevelInsufficient": "Anda hanya dapat mengubah role user yang levelnya lebih rendah ke role dengan level di bawah role Anda.",
+  "roleManagementLevelInsufficient": "Anda hanya dapat mengelola role dengan level di bawah level Anda.",
+  "userManagementLevelInsufficient": "Level role Anda tidak cukup untuk mengelola user.",
+  "systemRoleProtected": "Role sistem bawaan tidak dapat diubah atau dihapus.",
+  "roleUnchanged": "User sudah memiliki role tersebut.",
+  "selfRoleChangeForbidden": "Anda tidak dapat mengubah role sendiri."
+}

@@ -1,0 +1,14 @@
+.idea
+.vscode
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+!.env.test.example
+*.log
+.husky/_/
+artifacts/
+.codex
+AGENTS.md

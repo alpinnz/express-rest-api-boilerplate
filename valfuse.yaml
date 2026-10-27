@@ -1,0 +1,23 @@
+localization:
+  input_dir: assets/localizations
+  output_dir: src/generated/localization
+  framework: express
+  class_name: Localization
+  base_locale: id
+  fallback_locale: id
+  strict: true
+  namespace_prefix: module
+  generated:
+    runtime_entry_file: localization.ts
+    runtime_types_file: localization.type.ts
+  validation:
+    require_key_parity: true
+    require_placeholder_parity: true
+  reporting:
+    output_dir: artifacts/localization
+    coverage_format: json
+barrel:
+  input_dir: src/modules/auth/security
+  output_file: src/modules/auth/security/index.ts
+  include:
+    - argon2-password-hasher.ts

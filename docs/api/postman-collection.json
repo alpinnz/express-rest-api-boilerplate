@@ -1,0 +1,836 @@
+{
+  "info": {
+    "name": "Express REST API",
+    "description": "Server-generated identifiers, including request IDs, use UUIDv7. UUID-format inputs accept earlier UUID versions for compatibility.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "accept_language",
+      "value": "id",
+      "type": "string",
+      "description": "Response language: id or en."
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "role_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Check API and infrastructure health",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/health",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alfin Noviaji\",\n  \"email\": \"alpinnz@gmail.com\",\n  \"phone_number\": \"81234567890\",\n  \"country_code\": \"+62\",\n  \"password\": \"!Password123\",\n  \"confirm_password\": \"!Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/api/v1/auth/register"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const userId = body && body.data && body.data.id;",
+                  "  pm.test('Registration response contains user ID', function () {",
+                  "    pm.expect(userId).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alpinnz@gmail.com\",\n  \"password\": \"!Password123\",\n  \"remember_me\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/api/v1/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const data = body && body.data;",
+                  "  const accessToken = data && data.access_token;",
+                  "  const refreshToken = data && data.refresh_token;",
+                  "  pm.test('Login response contains access token and refresh token', function () {",
+                  "    pm.expect(accessToken).to.be.a('string').and.not.empty;",
+                  "    pm.expect(refreshToken).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "  if (typeof accessToken === 'string' && typeof refreshToken === 'string') {",
+                  "    pm.collectionVariables.set('access_token', accessToken);",
+                  "    pm.collectionVariables.set('refresh_token', refreshToken);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/api/v1/auth/refresh-token"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const data = body && body.data;",
+                  "  const accessToken = data && data.access_token;",
+                  "  const refreshToken = data && data.refresh_token;",
+                  "  pm.test('Refresh token response contains access token and refresh token', function () {",
+                  "    pm.expect(accessToken).to.be.a('string').and.not.empty;",
+                  "    pm.expect(refreshToken).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "  if (typeof accessToken === 'string' && typeof refreshToken === 'string') {",
+                  "    pm.collectionVariables.set('access_token', accessToken);",
+                  "    pm.collectionVariables.set('refresh_token', refreshToken);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/api/v1/auth/logout"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  pm.collectionVariables.set('access_token', '');",
+                  "  pm.collectionVariables.set('refresh_token', '');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "description": "System roles are owner (level 100), admin (level 80), staff (level 50), and user (level 10). New registrations receive user. Higher levels represent higher privilege; seeded system roles are protected.",
+      "item": [
+        {
+          "name": "List roles",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/roles",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Create role",
+          "request": {
+            "description": "Creates a custom role below the authenticated actor level. Seeded roles are reserved.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"support\",\n  \"level\": 20\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/api/v1/roles"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const roleId = body && body.data && body.data.id;",
+                  "  pm.test('Role creation response contains role ID', function () {",
+                  "    pm.expect(roleId).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "  if (typeof roleId === 'string') pm.collectionVariables.set('role_id', roleId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get role",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:role_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":role_id"],
+              "variable": [
+                {
+                  "key": "role_id",
+                  "value": "{{role_id}}"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Update role",
+          "request": {
+            "description": "Updates a custom role. Its current and resulting levels must both be below the actor level; seeded roles are reserved.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"support_agent\",\n  \"level\": 25\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:role_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":role_id"],
+              "variable": [
+                {
+                  "key": "role_id",
+                  "value": "{{role_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete role",
+          "request": {
+            "description": "Soft-deletes a custom role only if no active users are assigned to it. The role row and name remain reserved. Seeded roles are reserved.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/roles/:role_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "roles", ":role_id"],
+              "variable": [
+                {
+                  "key": "role_id",
+                  "value": "{{role_id}}"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Change user role",
+          "request": {
+            "description": "Requires a user_id path variable different from the authenticated actor and a role_id with a lower level than the actor's role. Copy role_id from List roles and enter the target user's ID in this request's path variable.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role_id\": \"{{role_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/:user_id/role",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", ":user_id", "role"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Me",
+          "item": [
+            {
+              "name": "Get my profile",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{access_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "url": "{{base_url}}/api/v1/users/me",
+                "description": "Returns the signed-in profile with a joined role object containing id, name, and level.",
+                "header": [
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{accept_language}}",
+                    "type": "text"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "Update my profile",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{access_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{accept_language}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Alfin Noviaji\",\n  \"phone_number\": \"81234567890\",\n  \"country_code\": \"+62\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{base_url}}/api/v1/users/me"
+              }
+            },
+            {
+              "name": "Change my password",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{access_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{accept_language}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current_password\": \"!Password123\",\n  \"new_password\": \"!NewPassword123\",\n  \"confirm_new_password\": \"!NewPassword123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{base_url}}/api/v1/users/me/password"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                      "  pm.collectionVariables.set('access_token', '');",
+                      "  pm.collectionVariables.set('refresh_token', '');",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Deactivate my account",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{access_token}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept-Language",
+                    "value": "{{accept_language}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"current_password\": \"!Password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": "{{base_url}}/api/v1/users/me"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                      "  pm.collectionVariables.set('access_token', '');",
+                      "  pm.collectionVariables.set('refresh_token', '');",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Create user (registration alias)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alfin Noviaji\",\n  \"email\": \"alpinnz@gmail.com\",\n  \"phone_number\": \"81234567890\",\n  \"country_code\": \"+62\",\n  \"password\": \"!Password123\",\n  \"confirm_password\": \"!Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/api/v1/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code >= 200 && pm.response.code < 300) {",
+                  "  const body = pm.response.json();",
+                  "  const userId = body && body.data && body.data.id;",
+                  "  pm.test('Registration response contains user ID', function () {",
+                  "    pm.expect(userId).to.be.a('string').and.not.empty;",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List users",
+          "request": {
+            "description": "Requires an active access token and role level 80 or higher (admin).",
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+            },
+            "url": "{{base_url}}/api/v1/users?page=1&limit=20",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get user",
+          "request": {
+            "description": "Requires an active access token and role level 80 or higher (admin).",
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/:user_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Update user",
+          "request": {
+            "description": "Owner only (role level 100). Do not target your own account by ID; use Users/Me.",
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+            },
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alfin Noviaji\",\n  \"phone_number\": \"81234567890\",\n  \"country_code\": \"+62\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/:user_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete user",
+          "request": {
+            "description": "Owner only. Deactivates the user and active credential, clears the password hash, and revokes all sessions. Rows and email remain stored.",
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/users/:user_id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "users", ":user_id"],
+              "variable": [
+                {
+                  "key": "user_id",
+                  "value": ""
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "{{accept_language}}",
+                "type": "text"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+image: node:24.19.0-bookworm-slim
+
+definitions:
+  caches:
+    npm:
+      key:
+        files:
+          - package-lock.json
+      path: ~/.npm
+  services:
+    postgres:
+      image: postgres:16.15-bookworm
+      memory: 1024
+      variables:
+        POSTGRES_DB: express_rest_api_boilerplate_test
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: development-test-only-password
+
+pipelines:
+  default:
+    - step:
+        name: Verify API, services, PostgreSQL, and build
+        caches:
+          - npm
+        services:
+          - postgres
+        script:
+          - export NODE_ENV=test HUSKY=0 CI=true REDOCLY_TELEMETRY=off REDOCLY_SUPPRESS_UPDATE_NOTICE=true
+          - npm install --global npm@12.0.0
+          - npm ci --no-audit --no-fund
+          - npm run env:setup
+          - export DATABASE_PORT=5432
+          - npm run ci
+        artifacts:
+          - dist/docs/**

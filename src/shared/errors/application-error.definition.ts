@@ -1,0 +1,15 @@
+export const applicationErrorDefinitions = {
+  bad_request: { status: 400, messageKey: "common.badRequest" },
+  conflict: { status: 409, messageKey: "common.conflict" },
+  forbidden: { status: 403, messageKey: "common.forbidden" },
+  content_too_large: { status: 413, messageKey: "common.contentTooLarge" },
+  internal_server_error: { status: 500, messageKey: "common.internalServerError" },
+  method_not_allowed: { status: 405, messageKey: "common.methodNotAllowed" },
+  not_acceptable: { status: 406, messageKey: "common.notAcceptable" },
+  not_found: { status: 404, messageKey: "common.notFound" },
+  service_unavailable: { status: 503, messageKey: "common.serviceUnavailable" },
+  too_many_requests: { status: 429, messageKey: "common.tooManyRequests" },
+  unauthorized: { status: 401, messageKey: "common.unauthorized" },
+  unsupported_media_type: { status: 415, messageKey: "common.unsupportedMediaType" },
+  validation_error: { status: 422, messageKey: "common.validationError" },
+} as const;

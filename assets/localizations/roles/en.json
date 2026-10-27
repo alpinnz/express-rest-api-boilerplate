@@ -1,0 +1,13 @@
+{
+  "roleNotFound": "Role not found.",
+  "roleNameInvalid": "Use a lowercase identifier with letters, numbers, underscores, or hyphens.",
+  "roleLevelInvalid": "Enter a positive whole-number role level.",
+  "roleNameAlreadyExists": "A role with this name already exists.",
+  "roleInUse": "The role cannot be deleted while active users are assigned to it.",
+  "roleLevelInsufficient": "You may change roles only for users below your level and to a role below your level.",
+  "roleManagementLevelInsufficient": "You can manage only roles with a level below your own.",
+  "userManagementLevelInsufficient": "Your role level is too low to manage users.",
+  "systemRoleProtected": "Seeded system roles cannot be modified or deleted.",
+  "roleUnchanged": "The user already has this role.",
+  "selfRoleChangeForbidden": "You cannot change your own role."
+}
